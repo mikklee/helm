@@ -31,6 +31,7 @@ import (
 type Push struct {
 	Settings *cli.EnvSettings
 	cfg      *Configuration
+	Tag      string
 }
 
 // PushOpt is a type of function that sets options for a push action.
@@ -53,7 +54,8 @@ func NewPushWithOpts(opts ...PushOpt) *Push {
 }
 
 // Run executes 'helm push' against the given chart archive.
-func (p *Push) Run(chartRef string, remote string) (string, error) {
+func (p *Push) Run(chartRef string, remote string, tag string) (string, error) {
+
 	var out strings.Builder
 
 	c := uploader.ChartUploader{
@@ -66,5 +68,5 @@ func (p *Push) Run(chartRef string, remote string) (string, error) {
 		c.Options = append(c.Options, pusher.WithRegistryClient(p.cfg.RegistryClient))
 	}
 
-	return out.String(), c.UploadTo(chartRef, remote)
+	return out.String(), c.UploadTo(chartRef, remote, tag)
 }
